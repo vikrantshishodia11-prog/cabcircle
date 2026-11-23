@@ -3,37 +3,66 @@
 
 import React from 'react';
 import { CabMode, Traveller, UserProfile } from '@/types/cabcircle';
-import { CAB_MODES } from '@/data/seedTravellers';
 
 interface CrewMatchViewProps {
   currentUser: UserProfile;
   traveller: Traveller;
-  cabMode: CabMode;
-  onChangeCabMode: (mode: CabMode) => void;
+  cabMode?: CabMode;
+  onChangeCabMode?: (mode: CabMode) => void;
   onOpenChat: () => void;
 }
 
 export function CrewMatchView({
   currentUser,
   traveller,
-  cabMode,
-  onChangeCabMode,
   onOpenChat,
 }: CrewMatchViewProps) {
+  const hubLabel = traveller.hubName || traveller.airport || 'Hub';
+  const hubBadge = traveller.hubType === 'railway' ? 'Railway' : 'Airport';
+
   return (
     <div className="bg-white rounded-3xl p-5 border border-[#E6E9EF] shadow-sm space-y-4">
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-bold uppercase tracking-wider bg-[#FBF6EC] text-[#0D1F3C] border border-[#C89D54]/40 px-3 py-1 rounded-full">
-          Crew Matched
-        </span>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[11px] font-bold uppercase tracking-wider bg-[#FBF6EC] text-[#0D1F3C] border border-[#C89D54]/40 px-3 py-1 rounded-full">
+            Crew Matched
+          </span>
+          <span className="text-[10px] font-bold bg-[#0D1F3C] text-white px-2.5 py-1 rounded-full">
+            {hubBadge}
+          </span>
+        </div>
         <span className="text-xs font-bold text-[#0D1F3C]">
-          {traveller.splitFare ? `Est. ₹${traveller.splitFare} each` : 'Fare split on route'}
+          {traveller.matchScore}% Match
         </span>
       </div>
 
-      <h2 className="text-xl font-bold text-[#111622]">
-        {traveller.airport} → {traveller.destination}
-      </h2>
+      <div>
+        <h2 className="text-lg font-bold text-[#111622]">
+          {hubLabel} → {traveller.destination}
+        </h2>
+        <p className="text-xs text-[#5C667A] mt-0.5">
+          Time Window: <span className="font-semibold text-[#111622]">{traveller.timeWindow}</span>
+        </p>
+      </div>
+
+      <div className="bg-[#F5F6F8] border border-[#E6E9EF] rounded-2xl p-3 space-y-1.5 text-xs">
+        {traveller.pickupPoint && (
+          <div className="flex justify-between gap-2">
+            <span className="text-[#5C667A]">Pickup Spot</span>
+            <span className="font-semibold text-[#111622] text-right">{traveller.pickupPoint}</span>
+          </div>
+        )}
+        <div className="flex justify-between gap-2">
+          <span className="text-[#5C667A]">Luggage</span>
+          <span className="font-semibold text-[#111622] text-right">{traveller.luggage}</span>
+        </div>
+        <div className="flex justify-between gap-2">
+          <span className="text-[#5C667A]">Seats Left</span>
+          <span className="font-semibold text-[#0D1F3C]">
+            {traveller.seatsLeft} {traveller.seatsLeft === 1 ? 'seat' : 'seats'}
+          </span>
+        </div>
+      </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between bg-[#F5F6F8] border border-[#E6E9EF] p-3 rounded-2xl">
@@ -54,26 +83,6 @@ export function CrewMatchView({
           <span className="text-[10px] font-bold bg-[#FBF6EC] text-[#0D1F3C] border border-[#C89D54]/40 px-2.5 py-1 rounded-full">
             Verified
           </span>
-        </div>
-      </div>
-
-      <div>
-        <p className="text-xs font-bold text-[#111622] mb-2">Switch Cab Mode for Crew</p>
-        <div className="grid grid-cols-2 gap-2">
-          {CAB_MODES.map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => onChangeCabMode(m)}
-              className={`py-2 px-3 rounded-xl text-xs font-semibold border transition cursor-pointer ${
-                cabMode === m
-                  ? 'bg-[#0D1F3C] text-white border-[#0D1F3C]'
-                  : 'bg-white text-[#111622] border-[#DCE0E8] hover:border-[#C89D54]'
-              }`}
-            >
-              {m}
-            </button>
-          ))}
         </div>
       </div>
 

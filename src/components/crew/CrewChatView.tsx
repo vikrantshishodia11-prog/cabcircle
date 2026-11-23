@@ -5,29 +5,30 @@ import React, { useState } from 'react';
 import { CabMode, ChatMessage, Traveller, UserProfile } from '@/types/cabcircle';
 
 interface CrewChatViewProps {
-  currentUser: UserProfile;
+  currentUser?: UserProfile;
   traveller: Traveller;
-  cabMode: CabMode;
+  cabMode?: CabMode;
   messages: ChatMessage[];
   onSendMessage: (text: string) => void;
   onBackToCrew: () => void;
 }
 
 const QUICK_CHIPS = [
-  'At Pillar 4',
-  'Meet at Prepaid Booth',
-  'Booking Cab Now',
+  'At pickup point',
+  '5 mins away',
+  'Share ride together?',
   'Split via UPI',
 ];
 
 export function CrewChatView({
   traveller,
-  cabMode,
   messages,
   onSendMessage,
   onBackToCrew,
 }: CrewChatViewProps) {
   const [draft, setDraft] = useState('');
+  const hubLabel = traveller.hubName || traveller.airport || 'Hub';
+  const hubBadge = traveller.hubType === 'railway' ? 'Railway' : 'Airport';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,17 +39,23 @@ export function CrewChatView({
 
   return (
     <div className="flex flex-col h-full bg-white rounded-3xl border border-[#E6E9EF] shadow-sm overflow-hidden">
-      <div className="p-3.5 bg-[#0D1F3C] text-white flex items-center justify-between border-b border-[#C89D54]/30">
-        <div>
-          <h3 className="text-sm font-bold">{traveller.name} &amp; You</h3>
-          <p className="text-[11px] text-[#E5C285]">
-            Mode: {cabMode} · {traveller.splitFare ? `Split ₹${traveller.splitFare}` : 'Fare on Route'}
+      <div className="p-3.5 bg-[#0D1F3C] text-white flex items-center justify-between gap-2 border-b border-[#C89D54]/30">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-sm font-bold truncate">{traveller.name} &amp; You</h3>
+            <span className="text-[10px] font-bold bg-[#C89D54] text-[#0D1F3C] px-2 py-0.5 rounded-full shrink-0">
+              {hubBadge}
+            </span>
+          </div>
+          <p className="text-[11px] text-[#E5C285] truncate">
+            {hubLabel} → {traveller.destination}
+            {traveller.pickupPoint ? ` · ${traveller.pickupPoint}` : ''}
           </p>
         </div>
         <button
           type="button"
           onClick={onBackToCrew}
-          className="text-[11px] font-semibold bg-[#FBF6EC] text-[#0D1F3C] px-3 py-1 rounded-full hover:bg-[#C89D54] transition cursor-pointer"
+          className="text-[11px] font-semibold bg-[#FBF6EC] text-[#0D1F3C] px-3 py-1 rounded-full hover:bg-[#C89D54] transition cursor-pointer shrink-0"
         >
           Crew Info
         </button>

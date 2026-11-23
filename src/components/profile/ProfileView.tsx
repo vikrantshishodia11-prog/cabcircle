@@ -10,14 +10,23 @@ interface ProfileViewProps {
 }
 
 export function ProfileView({ user, onLogout }: ProfileViewProps) {
+  const initials =
+    user.fullName
+      .trim()
+      .split(/\s+/)
+      .map((part) => part[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() || 'SY';
+
   return (
     <div className="bg-white rounded-3xl p-5 border border-[#E6E9EF] shadow-sm space-y-4">
       <div className="flex items-center gap-3">
-        <div className="w-14 h-14 rounded-2xl bg-[#0D1F3C] text-[#E5C285] border border-[#C89D54]/40 font-bold text-lg flex items-center justify-center">
-          {user.fullName.slice(0, 2).toUpperCase()}
+        <div className="w-14 h-14 rounded-2xl bg-[#0D1F3C] text-[#E5C285] border border-[#C89D54]/40 font-bold text-lg flex items-center justify-center shrink-0">
+          {initials}
         </div>
-        <div>
-          <h2 className="text-lg font-bold text-[#111622]">{user.fullName}</h2>
+        <div className="min-w-0">
+          <h2 className="text-lg font-bold text-[#111622] truncate">{user.fullName}</h2>
           <p className="text-xs text-[#5C667A]">
             +91 {user.phone} · {user.gender}
           </p>
@@ -29,14 +38,14 @@ export function ProfileView({ user, onLogout }: ProfileViewProps) {
         </div>
       </div>
 
-      <div className="bg-[#F5F6F8] border border-[#E6E9EF] rounded-2xl p-4 space-y-2 text-xs">
+      <div className="bg-[#F5F6F8] border border-[#E6E9EF] rounded-2xl p-4 space-y-1.5 text-xs">
         <div className="flex justify-between items-center">
-          <span className="text-[#5C667A]">Billing &amp; Alert Email</span>
+          <span className="text-[#5C667A]">Account Email</span>
           <span className="text-[10px] font-bold text-[#0D1F3C] bg-[#FBF6EC] border border-[#C89D54]/40 px-2 py-0.5 rounded-full">
-            Invoices Active
+            Verified
           </span>
         </div>
-        <p className="font-semibold text-[#111622]">{user.email}</p>
+        <p className="font-semibold text-[#111622] break-all">{user.email}</p>
       </div>
 
       <button
@@ -44,7 +53,7 @@ export function ProfileView({ user, onLogout }: ProfileViewProps) {
         onClick={onLogout}
         className="w-full py-3 rounded-2xl border border-red-200 text-red-600 text-xs font-bold hover:bg-red-50 transition cursor-pointer"
       >
-        Log Out (Test Auto-Detect Login)
+        Log Out
       </button>
     </div>
   );

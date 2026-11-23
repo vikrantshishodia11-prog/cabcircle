@@ -1,9 +1,16 @@
-import { CabMode, Traveller } from '@/types/cabcircle';
+import { CabMode, HubType, Traveller } from '@/types/cabcircle';
 
 export interface RouteMeta {
   name: string;
   distanceKm: number;
   toll: number;
+}
+
+export interface HubOption {
+  code: string;
+  label: string;
+  hubType: HubType;
+  pickupPoint: string;
 }
 
 export const AIRPORTS = [
@@ -12,6 +19,28 @@ export const AIRPORTS = [
   { code: 'DEL T3', label: 'DEL · Terminal 3' },
   { code: 'HYD', label: 'HYD · Rajiv Gandhi' },
 ] as const;
+
+export const RAILWAY_STATIONS = [
+  { code: 'NDLS', label: 'New Delhi Railway Station' },
+  { code: 'SBC', label: 'KSR Bengaluru (Majestic)' },
+  { code: 'CDG', label: 'Chandigarh Jn · Railway' },
+  { code: 'SC', label: 'Secunderabad Jn' },
+] as const;
+
+export const ALL_HUBS: HubOption[] = [
+  ...AIRPORTS.map((a) => ({
+    code: a.code,
+    label: a.label,
+    hubType: 'airport' as HubType,
+    pickupPoint: 'Arrival Gate 2 · Cab Zone',
+  })),
+  ...RAILWAY_STATIONS.map((r) => ({
+    code: r.code,
+    label: r.label,
+    hubType: 'railway' as HubType,
+    pickupPoint: 'Main Exit · Prepaid & Cab Lane',
+  })),
+];
 
 export const CAB_MODES: CabMode[] = [
   'Uber / Ola',
@@ -44,10 +73,38 @@ export const AIRPORT_ROUTES: Record<string, RouteMeta[]> = {
   ],
 };
 
-// Automatically derived from AIRPORT_ROUTES (Single Source of Truth)
+export const RAILWAY_ROUTES: Record<string, RouteMeta[]> = {
+  NDLS: [
+    { name: 'Connaught Place · Rajiv Chowk', distanceKm: 4, toll: 0 },
+    { name: 'Cyber Hub · Gurugram', distanceKm: 29, toll: 0 },
+    { name: 'Noida · Sector 62', distanceKm: 24, toll: 0 },
+  ],
+  SBC: [
+    { name: 'Indiranagar · 100ft Rd', distanceKm: 8, toll: 0 },
+    { name: 'Koramangala · 4th Block', distanceKm: 10, toll: 0 },
+    { name: 'Whitefield · ITPL', distanceKm: 19, toll: 0 },
+  ],
+  CDG: [
+    { name: 'Mohali · Phase 8', distanceKm: 14, toll: 0 },
+    { name: 'Sector 17 · Chandigarh', distanceKm: 9, toll: 0 },
+    { name: 'Zirakpur · VIP Road', distanceKm: 11, toll: 0 },
+  ],
+  SC: [
+    { name: 'HITEC City · Madhapur', distanceKm: 16, toll: 0 },
+    { name: 'Gachibowli', distanceKm: 19, toll: 0 },
+    { name: 'Banjara Hills', distanceKm: 9, toll: 0 },
+  ],
+};
+
+export const HUB_ROUTES: Record<string, RouteMeta[]> = {
+  ...AIRPORT_ROUTES,
+  ...RAILWAY_ROUTES,
+};
+
+// Automatically derived from HUB_ROUTES (Single Source of Truth)
 export const POPULAR_DESTINATIONS: Record<string, string[]> = Object.fromEntries(
-  Object.entries(AIRPORT_ROUTES).map(([airport, routes]) => [
-    airport,
+  Object.entries(HUB_ROUTES).map(([hub, routes]) => [
+    hub,
     ['All Routes', ...routes.map((r) => r.name)],
   ])
 );
@@ -60,7 +117,10 @@ export const SEED_TRAVELLERS: Traveller[] = [
     color: '#0F3D2E',
     gender: 'Female',
     company: 'Infosys Verified',
+    hubType: 'airport',
+    hubName: 'BLR T1',
     airport: 'BLR T1',
+    pickupPoint: 'Arrival Gate 2',
     destination: 'Whitefield · ITPL',
     timeWindow: '10:15 PM – 10:30 PM',
     luggage: '1 Cabin + 1 Check-in',
@@ -77,7 +137,10 @@ export const SEED_TRAVELLERS: Traveller[] = [
     color: '#2B59C3',
     gender: 'Male',
     company: 'Atlassian Verified',
+    hubType: 'airport',
+    hubName: 'BLR T1',
     airport: 'BLR T1',
+    pickupPoint: 'Arrival Gate 2',
     destination: 'Indiranagar · 100ft Rd',
     timeWindow: '10:20 PM – 10:40 PM',
     luggage: '1 Backpack',
@@ -94,14 +157,17 @@ export const SEED_TRAVELLERS: Traveller[] = [
     color: '#7C3AED',
     gender: 'Female',
     company: 'Razorpay Verified',
-    airport: 'BLR T2',
+    hubType: 'railway',
+    hubName: 'SBC',
+    airport: 'SBC',
+    pickupPoint: 'Platform 1 Main Exit',
     destination: 'Koramangala · 4th Block',
     timeWindow: '10:30 PM – 10:50 PM',
     luggage: '1 Check-in Suitcase',
     cabMode: 'Already Booked',
     seatsLeft: 1,
-    splitFare: 450,
-    soloFare: 1350,
+    splitFare: 145,
+    soloFare: 420,
     matchScore: 91,
   },
   {
@@ -111,14 +177,17 @@ export const SEED_TRAVELLERS: Traveller[] = [
     color: '#B45309',
     gender: 'Male',
     company: 'Email Verified',
-    airport: 'BLR T1',
-    destination: 'HSR Layout · Sector 2',
+    hubType: 'railway',
+    hubName: 'CDG',
+    airport: 'CDG',
+    pickupPoint: 'Main Exit · Cab Stand',
+    destination: 'Mohali · Phase 8',
     timeWindow: '10:10 PM – 10:30 PM',
     luggage: '2 Check-in Suitcases',
     cabMode: 'Local Cab',
     seatsLeft: 2,
-    splitFare: 440,
-    soloFare: 1320,
+    splitFare: 130,
+    soloFare: 380,
     matchScore: 89,
   },
 ];

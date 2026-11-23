@@ -1,5 +1,7 @@
 export type GenderOption = 'Female' | 'Male' | 'Non-binary';
 
+export type HubType = 'airport' | 'railway';
+
 export type CabMode =
   | 'Uber / Ola'
   | 'Prepaid Taxi'
@@ -8,7 +10,7 @@ export type CabMode =
 
 export type AuthStep = 'welcome' | 'otp' | 'profile_setup' | 'app';
 
-export type AppTab = 'discover' | 'preferences' | 'match' | 'chat' | 'profile';
+export type AppTab = 'discover' | 'match' | 'chat' | 'profile';
 
 export interface UserProfile {
   phone: string;
@@ -25,7 +27,11 @@ export interface Traveller {
   color: string;
   gender: 'Female' | 'Male';
   company: string;
-  airport: string;
+  hubType: HubType;
+  hubName: string;
+  /** @deprecated Use hubName instead; kept optional for backward compatibility */
+  airport?: string;
+  pickupPoint?: string;
   destination: string;
   timeWindow: string;
   luggage: string;
@@ -34,7 +40,7 @@ export interface Traveller {
   splitFare: number | null;
   soloFare: number | null;
   matchScore: number;
- isFareEstimated?: boolean;
+  isFareEstimated?: boolean;
 }
 
 export interface ChatMessage {

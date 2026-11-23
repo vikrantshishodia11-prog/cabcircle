@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { AppTab, CabMode, ChatMessage, Traveller, UserProfile } from '@/types/cabcircle';
-import { AIRPORTS, AIRPORT_ROUTES, SEED_TRAVELLERS, estimateCabFare } from '@/data/seedTravellers';
+import { AppTab, ChatMessage, HubType, Traveller, UserProfile } from '@/types/cabcircle';
+import { ALL_HUBS, HUB_ROUTES, SEED_TRAVELLERS, estimateCabFare } from '@/data/seedTravellers';
 import { clearActiveSession, restoreActiveSession } from '@/lib/storage';
 import { AuthFlow } from '@/components/auth/AuthFlow';
 import { DiscoverFeed } from '@/components/discover/DiscoverFeed';
-import { RidePreferences } from '@/components/preferences/RidePreferences';
 import { CrewMatchView } from '@/components/crew/CrewMatchView';
 import { CrewChatView } from '@/components/crew/CrewChatView';
 import { ProfileView } from '@/components/profile/ProfileView';
@@ -38,7 +37,6 @@ export default function SahYatriPage() {
   const [selectedRoute, setSelectedRoute] = useState<string>('All Routes');
   const [travellersList, setTravellersList] = useState<Traveller[]>(SEED_TRAVELLERS);
 
-  const [cabMode, setCabMode] = useState<CabMode>('Uber / Ola');
   const [passengers, setPassengers] = useState<number>(3);
   const [luggageType, setLuggageType] = useState<'light' | 'heavy'>('light');
 
@@ -50,23 +48,26 @@ export default function SahYatriPage() {
     if (restored) setCurrentUser(restored);
   }, []);
 
-  const routeList = AIRPORT_ROUTES[selectedAirport] || [];
+  const allRoutes = Object.values(HUB_ROUTES).flat();
   const activeRouteMeta =
-    routeList.find((r) => r.name === selectedRoute) ||
-    routeList[0] || { name: selectedRoute, distanceKm: 38, toll: 110 };
+    allRoutes.find((r) => r.name.toLowerCase() === selectedRoute.toLowerCase()) ||
+    allRoutes[0] || { name: selectedRoute, distanceKm: 24, toll: 0 };
 
-  const handleAirportChange = (airportCode: string) => {
-    setSelectedAirport(airportCode);
+  const handleHubChange = (hubCode: string) => {
+    setSelectedAirport(hubCode);
     setSelectedRoute('All Routes');
   };
 
   const handleJoinCrew = (traveller: Traveller) => {
     setMatchedTraveller(traveller);
-    setCabMode(traveller.cabMode);
     setActiveTab('match');
   };
 
-  const handlePostRoute = (customDestination: string, timeWindow: string) => {
+  const handlePostRoute = (
+    customDestination: string,
+    timeWindow: string,
+    hubCode?: string
+  ) => {
     if (!currentUser) return;
     const initials = currentUser.fullName
       .split(' ')
@@ -75,19 +76,37 @@ export default function SahYatriPage() {
       .slice(0, 2)
       .toUpperCase();
 
-    const matchedRoute = (AIRPORT_ROUTES[selectedAirport] || []).find(
-      (r) => r.name.toLowerCase() === customDestination.toLowerCase()
+    const targetHub = (hubCode || selectedAirport).trim() || 'BLR T1';
+    const matchedHub = ALL_HUBS.find(
+      (h) =>
+        h.code.toLowerCase() === targetHub.toLowerCase() ||
+        h.label.toLowerCase().includes(targetHub.toLowerCase())
+    );
+    const hubType: HubType =
+      matchedHub?.hubType ||
+      (targetHub.toLowerCase().includes('rail') ||
+      targetHub.toLowerCase().includes('jn') ||
+      targetHub.toLowerCase() === 'cdg' ||
+      targetHub.toLowerCase() === 'ndls' ||
+      targetHub.toLowerCase() === 'sbc' ||
+      targetHub.toLowerCase() === 'sc'
+        ? 'railway'
+        : 'airport');
+
+    const candidateRoutes = HUB_ROUTES[matchedHub?.code || targetHub] || allRoutes;
+    const matchedRoute = candidateRoutes.find(
+      (r) =>
+        r.name.toLowerCase() === customDestination.toLowerCase() ||
+        r.name.toLowerCase().includes(customDestination.toLowerCase())
     );
 
-    const estimated = matchedRoute
-      ? estimateCabFare({
-          cabMode,
-          distanceKm: matchedRoute.distanceKm,
-          toll: matchedRoute.toll,
-          passengers,
-          isLargeVehicle: luggageType === 'heavy',
-        })
-      : null;
+    const estimated = estimateCabFare({
+      cabMode: 'Uber / Ola',
+      distanceKm: matchedRoute ? matchedRoute.distanceKm : 20,
+      toll: matchedRoute ? matchedRoute.toll : 0,
+      passengers,
+      isLargeVehicle: luggageType === 'heavy',
+    });
 
     const newRideCard: Traveller = {
       id: `custom-${Date.now()}`,
@@ -96,19 +115,23 @@ export default function SahYatriPage() {
       color: '#0D1F3C',
       gender: currentUser.gender === 'Female' ? 'Female' : 'Male',
       company: currentUser.companyBadge || 'Email Verified',
-      airport: selectedAirport,
+      hubType,
+      hubName: targetHub,
+      airport: targetHub,
+      pickupPoint: matchedHub?.pickupPoint || 'Main Exit / Pickup Zone',
       destination: customDestination,
       timeWindow,
       luggage: luggageType === 'heavy' ? '2 Check-in Suitcases' : '1 Cabin Bag',
-      cabMode,
-      seatsLeft: passengers - 1,
-      splitFare: estimated ? estimated.perPersonMin : null,
-      soloFare: estimated ? estimated.maxTotal : null,
+      cabMode: 'Uber / Ola',
+      seatsLeft: Math.max(1, passengers - 1),
+      splitFare: estimated.perPersonMin,
+      soloFare: estimated.maxTotal,
       isFareEstimated: true,
       matchScore: 100,
     };
 
     setTravellersList((prev) => [newRideCard, ...prev]);
+    setSelectedAirport(targetHub);
     setSelectedRoute('All Routes');
   };
 
@@ -147,33 +170,26 @@ export default function SahYatriPage() {
           <AuthFlow onAuthenticated={setCurrentUser} />
         ) : (
           <>
-            <header className="px-5 pt-5 pb-3 bg-[#FFFFFF] border-b border-[#E6E9EF] flex items-center justify-between">
+     <header className="px-5 pt-5 pb-3 bg-[#FFFFFF] border-b border-[#E6E9EF] flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#C89D54]" />
                   <span className="font-bold text-base tracking-tight text-[#0D1F3C]">SahYatri</span>
                 </div>
                 <p className="text-[11px] text-[#5C667A]">
-                  Hi, <span className="font-semibold text-[#111622]">{currentUser.fullName.split(' ')[0]}</span> · {selectedAirport}
+                  Hi, <span className="font-semibold text-[#111622]">{currentUser.fullName.split(' ')[0]}</span>
                 </p>
               </div>
-              <select
-                value={selectedAirport}
-                onChange={(e) => handleAirportChange(e.target.value)}
-                className="bg-[#FBF6EC] border border-[#C89D54]/40 text-xs font-semibold text-[#0D1F3C] rounded-full px-3 py-1.5 outline-none cursor-pointer"
-              >
-                {AIRPORTS.map((airport) => (
-                  <option key={airport.code} value={airport.code}>
-                    {airport.label}
-                  </option>
-                ))}
-              </select>
+              {/* <span className="text-[11px] font-semibold bg-[#FBF6EC] text-[#9A722E] border border-[#C89D54]/40 px-3 py-1 rounded-full">
+                Airport · Railway
+              </span> */}
             </header>
 
             <main className="flex-1 overflow-y-auto p-4 bg-[#F5F6F8]">
               {activeTab === 'discover' && (
                 <DiscoverFeed
                   selectedAirport={selectedAirport}
+                  onChangeHub={handleHubChange}
                   selectedRoute={selectedRoute}
                   onChangeRoute={setSelectedRoute}
                   travellers={travellersList}
@@ -181,25 +197,13 @@ export default function SahYatriPage() {
                   onPostRoute={handlePostRoute}
                 />
               )}
-              {activeTab === 'preferences' && (
-                <RidePreferences
-                  distanceKm={activeRouteMeta.distanceKm}
-                  toll={activeRouteMeta.toll}
-                  cabMode={cabMode}
-                  onChangeCabMode={setCabMode}
-                  passengers={passengers}
-                  onChangePassengers={setPassengers}
-                  luggageType={luggageType}
-                  onChangeLuggage={setLuggageType}
-                  onApply={() => setActiveTab('discover')}
-                />
-              )}
+
               {activeTab === 'match' && (
                 <CrewMatchView
                   currentUser={currentUser}
                   traveller={matchedTraveller}
-                  cabMode={cabMode}
-                  onChangeCabMode={setCabMode}
+                  cabMode="Uber / Ola"
+                  onChangeCabMode={() => {}}
                   onOpenChat={() => setActiveTab('chat')}
                 />
               )}
@@ -207,7 +211,7 @@ export default function SahYatriPage() {
                 <CrewChatView
                   currentUser={currentUser}
                   traveller={matchedTraveller}
-                  cabMode={cabMode}
+                  cabMode="Uber / Ola"
                   messages={messages}
                   onSendMessage={handleSendMessage}
                   onBackToCrew={() => setActiveTab('match')}
