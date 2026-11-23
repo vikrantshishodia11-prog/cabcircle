@@ -1,7 +1,7 @@
 import { UserProfile } from '@/types/cabcircle';
 
-const USERS_KEY = 'cabcircle_users_v1';
-const SESSION_KEY = 'cabcircle_session_v1';
+const USERS_KEY = 'sahyatri_users_v1';
+const SESSION_KEY = 'sahyatri_session_v1';
 
 const DEMO_RETURNING_USER: UserProfile = {
   phone: '9999999999',

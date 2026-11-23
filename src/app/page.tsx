@@ -31,7 +31,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   },
 ];
 
-export default function CabCirclePage() {
+export default function SahYatriPage() {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [activeTab, setActiveTab] = useState<AppTab>('discover');
   const [selectedAirport, setSelectedAirport] = useState<string>('BLR T1');
@@ -151,7 +151,7 @@ const handlePostRoute = (customDestination: string, timeWindow: string) => {
               <div>
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#0F3D2E]" />
-                  <span className="font-bold text-base tracking-tight text-[#0F3D2E]">CabCircle</span>
+                  <span className="font-bold text-base tracking-tight text-[#0F3D2E]">SahYatri</span>
                 </div>
                 <p className="text-[11px] text-[#5B665F]">
                   Hi, <span className="font-semibold text-[#111915]">{currentUser.fullName.split(' ')[0]}</span> · {selectedAirport}

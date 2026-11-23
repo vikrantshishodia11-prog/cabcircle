@@ -71,7 +71,7 @@ export function AuthFlow({ onAuthenticated }: AuthFlowProps) {
       <div className="bg-[#0F3D2E] text-white rounded-3xl p-6">
         <div className="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-xs font-medium text-[#C6F432] mb-4">
           <span className="w-2 h-2 rounded-full bg-[#C6F432] animate-pulse" />
-          CabCircle · Airport Crew
+          SahYatri · Airport Crew
         </div>
         <h1 className="text-3xl font-bold leading-tight tracking-tight">
           Your Way. <span className="text-[#C6F432]">Together.</span>
