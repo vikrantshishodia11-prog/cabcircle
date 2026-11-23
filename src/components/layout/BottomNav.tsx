@@ -11,7 +11,6 @@ interface BottomNavProps {
 
 const NAV_ITEMS: { id: AppTab; label: string }[] = [
   { id: 'discover', label: 'Discover' },
-  { id: 'preferences', label: 'Cab Mode' },
   { id: 'match', label: 'Crew' },
   { id: 'chat', label: 'Chat' },
   { id: 'profile', label: 'Profile' },
@@ -19,7 +18,7 @@ const NAV_ITEMS: { id: AppTab; label: string }[] = [
 
 export function BottomNav({ activeTab, onSelectTab }: BottomNavProps) {
   return (
-    <nav className="bg-white border-t border-[#E6E9EF] px-2 py-2.5 grid grid-cols-5 gap-1 text-center">
+    <nav className="bg-white border-t border-[#E6E9EF] px-2 py-2.5 grid grid-cols-4 gap-1 text-center">
       {NAV_ITEMS.map((item) => (
         <button
           key={item.id}
