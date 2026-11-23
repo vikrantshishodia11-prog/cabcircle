@@ -37,60 +37,67 @@ export function CrewChatView({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-3xl border border-[#E2E6DC] overflow-hidden">
-      <div className="p-3.5 bg-[#0F3D2E] text-white flex items-center justify-between">
+    <div className="flex flex-col h-full bg-white rounded-3xl border border-[#E6E9EF] shadow-sm overflow-hidden">
+      <div className="p-3.5 bg-[#0D1F3C] text-white flex items-center justify-between border-b border-[#C89D54]/30">
         <div>
           <h3 className="text-sm font-bold">{traveller.name} &amp; You</h3>
-          <p className="text-[11px] text-[#C6F432]">Mode: {cabMode} · Split ₹{traveller.splitFare}</p>
+          <p className="text-[11px] text-[#E5C285]">
+            Mode: {cabMode} · {traveller.splitFare ? `Split ₹${traveller.splitFare}` : 'Fare on Route'}
+          </p>
         </div>
         <button
           type="button"
           onClick={onBackToCrew}
-          className="text-[11px] bg-white/15 px-2.5 py-1 rounded-full"
+          className="text-[11px] font-semibold bg-[#FBF6EC] text-[#0D1F3C] px-3 py-1 rounded-full hover:bg-[#C89D54] transition cursor-pointer"
         >
           Crew Info
         </button>
       </div>
 
-      <div className="flex-1 p-4 space-y-3 overflow-y-auto min-h-[280px]">
+      <div className="flex-1 p-4 space-y-3 overflow-y-auto min-h-[280px] bg-white">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}>
             <div
               className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-xs ${
                 msg.isMe
-                  ? 'bg-[#0F3D2E] text-white rounded-br-sm'
-                  : 'bg-[#F6F7F2] text-[#111915] rounded-bl-sm'
+                  ? 'bg-[#0D1F3C] text-white rounded-br-sm'
+                  : 'bg-[#F5F6F8] text-[#111622] border border-[#E6E9EF] rounded-bl-sm'
               }`}
             >
               <p>{msg.text}</p>
             </div>
-            <span className="text-[10px] text-[#7D8780] mt-1">{msg.sender} · {msg.time}</span>
+            <span className="text-[10px] text-[#5C667A] mt-1">
+              {msg.sender} · {msg.time}
+            </span>
           </div>
         ))}
       </div>
 
-      <div className="px-3 py-2 bg-[#F6F7F2] flex gap-1.5 overflow-x-auto border-t border-[#E5E8DF]">
+      <div className="px-3 py-2 bg-[#F5F6F8] flex gap-1.5 overflow-x-auto border-t border-[#E6E9EF]">
         {QUICK_CHIPS.map((chip) => (
           <button
             key={chip}
             type="button"
             onClick={() => onSendMessage(chip)}
-            className="text-[11px] font-semibold bg-white border border-[#DCE0D5] text-[#0F3D2E] px-2.5 py-1 rounded-full whitespace-nowrap"
+            className="text-[11px] font-semibold bg-white border border-[#DCE0E8] hover:border-[#C89D54] text-[#0D1F3C] px-2.5 py-1 rounded-full whitespace-nowrap transition cursor-pointer"
           >
             {chip}
           </button>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-[#E5E8DF] flex gap-2">
+      <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-[#E6E9EF] flex gap-2">
         <input
           type="text"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Coordinate pickup spot..."
-          className="flex-1 bg-[#F6F7F2] rounded-xl px-3.5 py-2.5 text-xs outline-none"
+          className="flex-1 bg-[#F5F6F8] border border-[#DCE0E8] focus:border-[#0D1F3C] text-[#111622] rounded-xl px-3.5 py-2.5 text-xs outline-none"
         />
-        <button type="submit" className="bg-[#0F3D2E] text-white text-xs font-bold px-4 rounded-xl">
+        <button
+          type="submit"
+          className="bg-[#0D1F3C] hover:bg-[#162E54] text-white text-xs font-bold px-4 rounded-xl transition cursor-pointer"
+        >
           Send
         </button>
       </form>

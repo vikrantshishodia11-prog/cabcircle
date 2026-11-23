@@ -19,16 +19,16 @@ const NAV_ITEMS: { id: AppTab; label: string }[] = [
 
 export function BottomNav({ activeTab, onSelectTab }: BottomNavProps) {
   return (
-    <nav className="bg-white border-t border-[#E5E8DF] px-2 py-2.5 grid grid-cols-5 text-center">
+    <nav className="bg-white border-t border-[#E6E9EF] px-2 py-2.5 grid grid-cols-5 gap-1 text-center">
       {NAV_ITEMS.map((item) => (
         <button
           key={item.id}
           type="button"
           onClick={() => onSelectTab(item.id)}
-          className={`py-1.5 rounded-xl text-[11px] font-bold transition ${
+          className={`py-1.5 rounded-xl text-[11px] font-bold transition cursor-pointer ${
             activeTab === item.id
-              ? 'bg-[#0F3D2E] text-[#C6F432]'
-              : 'text-[#5B665F] hover:text-[#111915]'
+              ? 'bg-[#0D1F3C] text-[#E5C285] shadow-xs'
+              : 'text-[#5C667A] hover:text-[#111622] hover:bg-[#F5F6F8]'
           }`}
         >
           {item.label}

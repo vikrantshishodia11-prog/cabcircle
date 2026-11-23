@@ -66,51 +66,51 @@ export default function SahYatriPage() {
     setActiveTab('match');
   };
 
-const handlePostRoute = (customDestination: string, timeWindow: string) => {
-  if (!currentUser) return;
-  const initials = currentUser.fullName
-    .split(' ')
-    .map((p) => p[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
+  const handlePostRoute = (customDestination: string, timeWindow: string) => {
+    if (!currentUser) return;
+    const initials = currentUser.fullName
+      .split(' ')
+      .map((p) => p[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
 
-  const matchedRoute = (AIRPORT_ROUTES[selectedAirport] || []).find(
-    (r) => r.name.toLowerCase() === customDestination.toLowerCase()
-  );
+    const matchedRoute = (AIRPORT_ROUTES[selectedAirport] || []).find(
+      (r) => r.name.toLowerCase() === customDestination.toLowerCase()
+    );
 
-  const estimated = matchedRoute
-    ? estimateCabFare({
-        cabMode,
-        distanceKm: matchedRoute.distanceKm,
-        toll: matchedRoute.toll,
-        passengers,
-        isLargeVehicle: luggageType === 'heavy',
-      })
-    : null;
+    const estimated = matchedRoute
+      ? estimateCabFare({
+          cabMode,
+          distanceKm: matchedRoute.distanceKm,
+          toll: matchedRoute.toll,
+          passengers,
+          isLargeVehicle: luggageType === 'heavy',
+        })
+      : null;
 
-  const newRideCard: Traveller = {
-    id: `custom-${Date.now()}`,
-    name: `${currentUser.fullName} (You)`,
-    initials,
-    color: '#0F3D2E',
-    gender: currentUser.gender === 'Female' ? 'Female' : 'Male',
-    company: currentUser.companyBadge || 'Email Verified',
-    airport: selectedAirport,
-    destination: customDestination,
-    timeWindow,
-    luggage: luggageType === 'heavy' ? '2 Check-in Suitcases' : '1 Cabin Bag',
-    cabMode,
-    seatsLeft: passengers - 1,
-    splitFare: estimated ? estimated.perPersonMin : null,
-    soloFare: estimated ? estimated.maxTotal : null,
-    isFareEstimated: true,
-    matchScore: 100,
+    const newRideCard: Traveller = {
+      id: `custom-${Date.now()}`,
+      name: `${currentUser.fullName} (You)`,
+      initials,
+      color: '#0D1F3C',
+      gender: currentUser.gender === 'Female' ? 'Female' : 'Male',
+      company: currentUser.companyBadge || 'Email Verified',
+      airport: selectedAirport,
+      destination: customDestination,
+      timeWindow,
+      luggage: luggageType === 'heavy' ? '2 Check-in Suitcases' : '1 Cabin Bag',
+      cabMode,
+      seatsLeft: passengers - 1,
+      splitFare: estimated ? estimated.perPersonMin : null,
+      soloFare: estimated ? estimated.maxTotal : null,
+      isFareEstimated: true,
+      matchScore: 100,
+    };
+
+    setTravellersList((prev) => [newRideCard, ...prev]);
+    setSelectedRoute('All Routes');
   };
-
-  setTravellersList((prev) => [newRideCard, ...prev]);
-  setSelectedRoute('All Routes');
-};
 
   const handleSendMessage = (text: string) => {
     if (!currentUser) return;
@@ -141,26 +141,26 @@ const handlePostRoute = (customDestination: string, timeWindow: string) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-0 sm:p-4 bg-[#ECEEE7]">
-      <div className="w-full max-w-[420px] min-h-screen sm:min-h-[820px] sm:h-[820px] bg-[#F6F7F2] sm:rounded-[36px] sm:shadow-2xl border border-[#DCE0D5] flex flex-col overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-0 sm:p-4 bg-[#E6E9EF]">
+      <div className="w-full max-w-[420px] min-h-screen sm:min-h-[820px] sm:h-[820px] bg-[#F5F6F8] sm:rounded-[36px] sm:shadow-2xl border border-[#DCE0E8] flex flex-col overflow-hidden">
         {!currentUser ? (
           <AuthFlow onAuthenticated={setCurrentUser} />
         ) : (
           <>
-            <header className="px-5 pt-5 pb-3 bg-[#F6F7F2] border-b border-[#E5E8DF] flex items-center justify-between">
+            <header className="px-5 pt-5 pb-3 bg-[#FFFFFF] border-b border-[#E6E9EF] flex items-center justify-between">
               <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0F3D2E]" />
-                  <span className="font-bold text-base tracking-tight text-[#0F3D2E]">SahYatri</span>
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#C89D54]" />
+                  <span className="font-bold text-base tracking-tight text-[#0D1F3C]">SahYatri</span>
                 </div>
-                <p className="text-[11px] text-[#5B665F]">
-                  Hi, <span className="font-semibold text-[#111915]">{currentUser.fullName.split(' ')[0]}</span> · {selectedAirport}
+                <p className="text-[11px] text-[#5C667A]">
+                  Hi, <span className="font-semibold text-[#111622]">{currentUser.fullName.split(' ')[0]}</span> · {selectedAirport}
                 </p>
               </div>
               <select
                 value={selectedAirport}
                 onChange={(e) => handleAirportChange(e.target.value)}
-                className="bg-white border border-[#DCE0D5] text-xs font-semibold text-[#0F3D2E] rounded-full px-3 py-1.5 outline-none"
+                className="bg-[#FBF6EC] border border-[#C89D54]/40 text-xs font-semibold text-[#0D1F3C] rounded-full px-3 py-1.5 outline-none cursor-pointer"
               >
                 {AIRPORTS.map((airport) => (
                   <option key={airport.code} value={airport.code}>
@@ -170,7 +170,7 @@ const handlePostRoute = (customDestination: string, timeWindow: string) => {
               </select>
             </header>
 
-            <main className="flex-1 overflow-y-auto p-4">
+            <main className="flex-1 overflow-y-auto p-4 bg-[#F5F6F8]">
               {activeTab === 'discover' && (
                 <DiscoverFeed
                   selectedAirport={selectedAirport}

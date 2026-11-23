@@ -48,28 +48,28 @@ export function DiscoverFeed({
   return (
     <div className="space-y-4">
       {/* Route Selector Card */}
-      <div className="bg-white rounded-3xl p-4 border border-[#E2E6DC] shadow-sm space-y-3">
+      <div className="bg-white rounded-3xl p-4 border border-[#E6E9EF] shadow-sm space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#5B665F]">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#5C667A]">
             Your Airport Route
           </span>
           <button
             type="button"
             onClick={() => setShowPostForm((prev) => !prev)}
-            className="text-[11px] font-bold bg-[#C6F432] text-[#0F3D2E] px-3 py-1 rounded-full"
+            className="text-[11px] font-bold bg-[#C89D54] hover:bg-[#B88D44] text-[#0D1F3C] px-3 py-1 rounded-full transition cursor-pointer"
           >
             {showPostForm ? 'Close' : '+ Post My Route'}
           </button>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#F6F7F2] border border-[#DCE0D5] rounded-2xl px-3.5 py-2.5">
-          <span className="text-xs font-extrabold text-[#0F3D2E] whitespace-nowrap">
+        <div className="flex items-center gap-2 bg-[#F5F6F8] border border-[#DCE0E8] rounded-2xl px-3.5 py-2.5">
+          <span className="text-xs font-extrabold text-[#0D1F3C] whitespace-nowrap">
             {selectedAirport} →
           </span>
           <select
             value={selectedRoute}
             onChange={(e) => onChangeRoute(e.target.value)}
-            className="bg-transparent text-xs font-semibold text-[#111915] w-full outline-none"
+            className="bg-transparent text-xs font-semibold text-[#111622] w-full outline-none cursor-pointer"
           >
             {airportRoutes.map((route) => (
               <option key={route} value={route}>
@@ -81,13 +81,13 @@ export function DiscoverFeed({
 
         {/* Post Custom Route Drawer */}
         {showPostForm && (
-          <form onSubmit={handleCreateRoute} className="pt-2 border-t border-[#E5E8DF] space-y-2.5">
+          <form onSubmit={handleCreateRoute} className="pt-2 border-t border-[#E6E9EF] space-y-2.5">
             <input
               type="text"
               value={customDest}
               onChange={(e) => setCustomDest(e.target.value)}
               placeholder="Enter drop area (e.g. Bellandur, Marathahalli)"
-              className="w-full bg-[#F6F7F2] border border-[#DCE0D5] rounded-xl px-3 py-2 text-xs outline-none focus:border-[#0F3D2E]"
+              className="w-full bg-[#F5F6F8] border border-[#DCE0E8] rounded-xl px-3 py-2 text-xs text-[#111622] outline-none focus:border-[#0D1F3C]"
               required
             />
             <div className="flex gap-2">
@@ -95,11 +95,11 @@ export function DiscoverFeed({
                 type="text"
                 value={customTime}
                 onChange={(e) => setCustomTime(e.target.value)}
-                className="flex-1 bg-[#F6F7F2] border border-[#DCE0D5] rounded-xl px-3 py-2 text-xs outline-none"
+                className="flex-1 bg-[#F5F6F8] border border-[#DCE0E8] rounded-xl px-3 py-2 text-xs text-[#111622] outline-none"
               />
               <button
                 type="submit"
-                className="bg-[#0F3D2E] text-white text-xs font-bold px-4 py-2 rounded-xl"
+                className="bg-[#0D1F3C] hover:bg-[#162E54] text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer"
               >
                 Publish
               </button>
@@ -113,10 +113,10 @@ export function DiscoverFeed({
         <button
           type="button"
           onClick={() => setWomenOnly((prev) => !prev)}
-          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border whitespace-nowrap transition ${
+          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border whitespace-nowrap transition cursor-pointer ${
             womenOnly
-              ? 'bg-[#0F3D2E] text-white border-[#0F3D2E]'
-              : 'bg-white text-[#3E4A43] border-[#DCE0D5]'
+              ? 'bg-[#0D1F3C] text-white border-[#0D1F3C]'
+              : 'bg-white text-[#111622] border-[#DCE0E8] hover:border-[#C89D54]'
           }`}
         >
           Women-Only Crew
@@ -124,10 +124,10 @@ export function DiscoverFeed({
         <button
           type="button"
           onClick={() => setVerifiedOnly((prev) => !prev)}
-          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border whitespace-nowrap transition ${
+          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border whitespace-nowrap transition cursor-pointer ${
             verifiedOnly
-              ? 'bg-[#0F3D2E] text-white border-[#0F3D2E]'
-              : 'bg-white text-[#3E4A43] border-[#DCE0D5]'
+              ? 'bg-[#0D1F3C] text-white border-[#0D1F3C]'
+              : 'bg-white text-[#111622] border-[#DCE0E8] hover:border-[#C89D54]'
           }`}
         >
           Corporate Verified
@@ -136,63 +136,71 @@ export function DiscoverFeed({
 
       {/* Matching Co-Traveller Cards */}
       {visibleTravellers.length === 0 ? (
-        <div className="bg-white rounded-3xl p-6 border border-[#E2E6DC] text-center space-y-2">
-          <p className="text-sm font-bold text-[#111915]">No active riders on this exact route yet</p>
-          <p className="text-xs text-[#5B665F]">
-            Tap <span className="font-semibold text-[#0F3D2E]">+ Post My Route</span> above so incoming flyers can match with you.
+        <div className="bg-white rounded-3xl p-6 border border-[#E6E9EF] text-center space-y-2">
+          <p className="text-sm font-bold text-[#111622]">No active riders on this exact route yet</p>
+          <p className="text-xs text-[#5C667A]">
+            Tap <span className="font-semibold text-[#0D1F3C]">+ Post My Route</span> above so incoming flyers can match with you.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {visibleTravellers.map((t) => (
-            <div key={t.id} className="bg-white rounded-3xl p-4 border border-[#E2E6DC] shadow-sm space-y-3">
+            <div key={t.id} className="bg-white rounded-3xl p-4 border border-[#E6E9EF] shadow-sm space-y-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
-                    style={{ backgroundColor: t.color }}
+                    style={{ backgroundColor: t.color || '#0D1F3C' }}
                     className="w-11 h-11 rounded-2xl text-white font-bold text-sm flex items-center justify-center"
                   >
                     {t.initials}
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <h3 className="font-bold text-sm text-[#111915]">{t.name}</h3>
-                      <span className="text-[10px] font-semibold bg-[#E9F7BE] text-[#0F3D2E] px-2 py-0.5 rounded-full">
+                      <h3 className="font-bold text-sm text-[#111622]">{t.name}</h3>
+                      <span className="text-[10px] font-semibold bg-[#FBF6EC] text-[#0D1F3C] border border-[#C89D54]/40 px-2 py-0.5 rounded-full">
                         {t.matchScore}% Match
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#5B665F]">{t.company} · {t.gender}</p>
+                    <p className="text-[11px] text-[#5C667A]">{t.company} · {t.gender}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-base font-extrabold text-[#0F3D2E]">₹{t.splitFare}</span>
-                  <span className="block text-[10px] line-through text-[#8B958E]">₹{t.soloFare}</span>
+                  {t.splitFare ? (
+                    <>
+                      <span className="text-base font-extrabold text-[#0D1F3C]">₹{t.splitFare}</span>
+                      {t.soloFare && (
+                        <span className="block text-[10px] line-through text-[#8A94A6]">₹{t.soloFare}</span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-xs font-bold text-[#9A722E]">Est. on route</span>
+                  )}
                 </div>
               </div>
 
-              <div className="bg-[#F6F7F2] rounded-2xl p-3 space-y-1.5 text-xs">
+              <div className="bg-[#F5F6F8] rounded-2xl p-3 space-y-1.5 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-[#5B665F]">Route</span>
-                  <span className="font-semibold text-[#111915]">{t.airport} → {t.destination}</span>
+                  <span className="text-[#5C667A]">Route</span>
+                  <span className="font-semibold text-[#111622]">{t.airport} → {t.destination}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#5B665F]">Window</span>
-                  <span className="font-semibold text-[#111915]">{t.timeWindow}</span>
+                  <span className="text-[#5C667A]">Window</span>
+                  <span className="font-semibold text-[#111622]">{t.timeWindow}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#5B665F]">Cab &amp; Bags</span>
-                  <span className="font-semibold text-[#0F3D2E]">{t.cabMode} · {t.luggage}</span>
+                  <span className="text-[#5C667A]">Cab &amp; Bags</span>
+                  <span className="font-semibold text-[#0D1F3C]">{t.cabMode} · {t.luggage}</span>
                 </div>
               </div>
 
               <div className="flex items-center justify-between pt-1">
-                <span className="text-[11px] font-semibold text-[#5B665F]">
+                <span className="text-[11px] font-semibold text-[#5C667A]">
                   {t.seatsLeft} {t.seatsLeft === 1 ? 'seat' : 'seats'} left
                 </span>
                 <button
                   type="button"
                   onClick={() => onJoinCrew(t)}
-                  className="bg-[#0F3D2E] text-white text-xs font-semibold px-4 py-2.5 rounded-xl hover:bg-[#165440]"
+                  className="bg-[#0D1F3C] hover:bg-[#162E54] text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition cursor-pointer"
                 >
                   Join Crew →
                 </button>

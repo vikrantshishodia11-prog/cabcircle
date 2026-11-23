@@ -1,10 +1,24 @@
 import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-mono',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: 'SahYatri — Airport Cab Sharing & Fare Split',
-  description:
-    'Find verified co-travellers on the same airport route, lock crew seats before landing, and split cab fares transparently.',
+  title: 'SahYatri · Airport Crew & Cab Split',
+  description: 'Split airport cabs safely with verified co-travellers heading your way.',
 };
 
 export default function RootLayout({
@@ -13,8 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased bg-[#F6F8F5] text-[#111814]">{children}</body>
+    <html lang="en" className={`${plusJakarta.variable} ${jetbrainsMono.variable}`}>
+      <body className="font-sans antialiased bg-[#F5F6F8] text-[#111622]">
+        {children}
+      </body>
     </html>
   );
 }
