@@ -20,6 +20,14 @@ export interface UserProfile {
   companyBadge?: string;
 }
 
+export interface CrewMember {
+  id: string;
+  name: string;
+  initials: string;
+  role: 'Host' | 'Member';
+  badge?: string;
+}
+
 export interface Traveller {
   id: string;
   name: string;
@@ -37,6 +45,8 @@ export interface Traveller {
   luggage: string;
   cabMode: CabMode;
   seatsLeft: number;
+  maxMembers?: number;
+  members?: CrewMember[];
   splitFare: number | null;
   soloFare: number | null;
   matchScore: number;
@@ -50,4 +60,5 @@ export interface ChatMessage {
   text: string;
   time: string;
   isMe: boolean;
+  isSystem?: boolean;
 }
